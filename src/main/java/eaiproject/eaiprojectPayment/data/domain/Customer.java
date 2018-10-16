@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Customer {
 	
-	@Id @GeneratedValue
+	@Id
 	private Integer customer_id;
 	private String first_name;
 	private String last_name;
