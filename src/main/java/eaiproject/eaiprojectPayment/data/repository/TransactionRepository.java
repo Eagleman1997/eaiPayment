@@ -10,6 +10,6 @@ import eaiproject.eaiprojectPayment.data.domain.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Integer>{
 	
-	public List<Transaction> findTransactionsByTransactionId(@Param("transaction_id") Integer transactionId);
+	public List<Transaction> findTransactionsByTransactionId(@Param("transaction_id") Integer TransactionId);
 
 }
