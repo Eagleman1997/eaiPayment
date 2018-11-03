@@ -8,9 +8,8 @@ import org.springframework.data.repository.query.Param;
 import eaiproject.eaiprojectPayment.data.domain.Transaction;
 
 
-public interface TransactionRepository  extends JpaRepository<Transaction, Integer>{
+public interface TransactionRepository extends JpaRepository<Transaction, Integer>{
 	
-	public List<Transaction> findTransactionsByTrackingId(@Param("transactionId") Integer transactionId);
-	public List<Transaction> findTransactionsByOrderId(@Param("transaction_date") Date transactionDate);
+	public List<Transaction> findTransactionsByTransactionId(@Param("transaction_id") Integer transactionId);
 
 }
