@@ -19,8 +19,8 @@ public class Transaction {
 	}
 	
 	
-	public Transaction(Integer transaction_id2, Date transaction_date2, String payment_service_provider2,
-			Double total_order_price2) {
+	public Transaction(Integer transaction_id, Date transaction_date, String payment_service_provider,
+			Double total_order_price) {
 		this.transaction_id = transaction_id;
 		this.transaction_date = transaction_date;
 		this.payment_service_provider = payment_service_provider;
