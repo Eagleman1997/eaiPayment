@@ -20,7 +20,7 @@ public class CustomerServiceClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public Customer retrieveCustomerById(Long customerId) {
+    public Customer retrieveCustomerById(Integer customerId) {
         return restTemplate.getForObject("http://localhost:8080/camel/customer/"  + customerId, Customer.class);
     }
 

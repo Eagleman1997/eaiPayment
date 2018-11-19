@@ -1,5 +1,6 @@
 package eaiproject.eaiprojectPayment.data.domain;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -8,22 +9,24 @@ import javax.persistence.*;
 public class Transaction {
 	
 	@Id @GeneratedValue
+	private Customer customer;
 	private Integer transaction_id;
+	private Integer order_id;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date transaction_date;
-	private String payment_service_provider;
 	private Double total_order_price;
+	private Boolean Canceled;
 	
 	public Transaction(){
 		super();
 	}
 	
 	
-	public Transaction(Integer transaction_id, Date transaction_date, String payment_service_provider,
-			Double total_order_price) {
+	public Transaction(Customer customer, Integer transaction_id, Integer order_id, Double total_order_price) {
+		this.customer = customer;
 		this.transaction_id = transaction_id;
-		this.transaction_date = transaction_date;
-		this.payment_service_provider = payment_service_provider;
+		this.order_id = order_id;
+		this.transaction_date = new Timestamp(System.currentTimeMillis());
 		this.total_order_price = total_order_price;
 	}
 	
@@ -43,13 +46,15 @@ public class Transaction {
 		this.transaction_date = transaction_date;
 	}
 
-	public String getPayment_service_provider() {
-		return payment_service_provider;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setPayment_service_provider(String payment_service_provider) {
-		this.payment_service_provider = payment_service_provider;
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
+
 
 	public Double getTotal_order_price() {
 		return total_order_price;
@@ -57,6 +62,16 @@ public class Transaction {
 
 	public void setTotal_order_price(Double total_order_price) {
 		this.total_order_price = total_order_price;
+	}
+
+
+	public Boolean getCanceled() {
+		return Canceled;
+	}
+
+
+	public void setCanceled(Boolean canceled) {
+		Canceled = canceled;
 	}
 
 }

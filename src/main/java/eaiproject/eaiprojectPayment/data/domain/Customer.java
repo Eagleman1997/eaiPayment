@@ -7,23 +7,34 @@ import javax.persistence.*;
 @Entity
 public class Customer {
 	
-	@Id
+	@Id @GeneratedValue
 	private Integer customer_id;
 	private String first_name;
 	private String last_name;
 	private String creditcard_provider;
 	private String creditcard_number;
+	private String shipping_address_name;
+	private String shipping_address_street;
+	private String shipping_address_location;
 	private Integer nmbr_of_loyalty_points;
-	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "customer_fk")
-	private List<Transaction> transactions;
 	
 
 	public Customer() {
 		super();
 	}
-	
+
+
+	public Customer(Integer customer_id, String first_name, String last_name, String shipping_address_name,
+			String shipping_address_street, String shipping_address_location) {
+		this.customer_id = customer_id;
+		this.first_name = first_name;
+		this.last_name = last_name;
+		this.shipping_address_name = shipping_address_name;
+		this.shipping_address_street = shipping_address_street;
+		this.shipping_address_location = shipping_address_location;
+	}
+
+
 	public Integer getCustomer_id() {
 		return customer_id;
 	}
@@ -74,6 +85,36 @@ public class Customer {
 	}
 
 
+	public String getShipping_address_name() {
+		return shipping_address_name;
+	}
+
+
+	public void setShipping_address_name(String shipping_address_name) {
+		this.shipping_address_name = shipping_address_name;
+	}
+
+
+	public String getShipping_address_street() {
+		return shipping_address_street;
+	}
+
+
+	public void setShipping_address_street(String shipping_address_street) {
+		this.shipping_address_street = shipping_address_street;
+	}
+
+
+	public String getShipping_address_location() {
+		return shipping_address_location;
+	}
+
+
+	public void setShipping_address_location(String shipping_address_location) {
+		this.shipping_address_location = shipping_address_location;
+	}
+
+
 	public Integer getNmbr_of_loyalty_points() {
 		return nmbr_of_loyalty_points;
 	}
@@ -82,17 +123,7 @@ public class Customer {
 	public void setNmbr_of_loyalty_points(Integer nmbr_of_loyalty_points) {
 		this.nmbr_of_loyalty_points = nmbr_of_loyalty_points;
 	}
-
-
-	public List<Transaction> getTransactions() {
-		return transactions;
-	}
-
-
-	public void setTransactions(List<Transaction> transactions) {
-		this.transactions = transactions;
-	}
-
-
+	
+	
 	
 }
