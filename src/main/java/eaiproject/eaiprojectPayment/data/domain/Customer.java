@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+
 @Entity
 public class Customer {
 	
@@ -16,7 +17,11 @@ public class Customer {
 	private String shipping_address_name;
 	private String shipping_address_street;
 	private String shipping_address_location;
+
 	private Integer nmbr_of_loyalty_points;
+	private String customerType;
+	private Integer customerPoints;
+	
 	
 
 	public Customer() {
@@ -32,6 +37,7 @@ public class Customer {
 		this.shipping_address_name = shipping_address_name;
 		this.shipping_address_street = shipping_address_street;
 		this.shipping_address_location = shipping_address_location;
+		this.customerType = "NORMAL";
 	}
 
 
@@ -124,6 +130,22 @@ public class Customer {
 		this.nmbr_of_loyalty_points = nmbr_of_loyalty_points;
 	}
 	
+	
+	public String getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
+	}
+	
+	public Integer getCustomerPoints() {
+		return customerPoints;
+	}
+
+	public void setCustomerPoints(Integer customerPoints) {
+		this.customerPoints = customerPoints;
+	}
 	
 	
 }
