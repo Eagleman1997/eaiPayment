@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spring:
+  rabbitmq: 
+    host: 1l8UXKz_KI7H-c_3hgzkApeQtYp_oZk6@flamingo.rmq.cloudamqp.com/hhpkexry
+    username: hhpkexry
+    password: 1l8UXKz_KI7H-c_3hgzkApeQtYp_oZk6
+    virtual-host: hhpkexry

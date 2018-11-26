@@ -9,3 +9,13 @@ spring:
     url: jdbc:h2:file:./data/database
     username: sa
     password: sa
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: order-fulfillment
+          content-type: application/json
+        input:
+          destination: order-fulfillment
+          content-type: application/json
+      default-binder: rabbit
