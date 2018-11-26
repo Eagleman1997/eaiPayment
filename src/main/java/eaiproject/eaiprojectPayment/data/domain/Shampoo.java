@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Shampoo {
 	
-	@Id
+	@Id @GeneratedValue
 	private Integer shampoo_id;
 	private String name;
 	private String brand;
@@ -15,15 +15,18 @@ public class Shampoo {
 	public Shampoo() {
 		super();
 	}
+	
 
 	public Shampoo(Integer shampoo_id, String name, String brand, String type, Double price) {
 		this.shampoo_id = shampoo_id;
 		this.name = name;
-		this.brand = brand;
 		this.type = type;
 		this.price = price;
 	}
-	
+
+
+
+
 	public Integer getShampoo_id() {
 		return shampoo_id;
 	}
