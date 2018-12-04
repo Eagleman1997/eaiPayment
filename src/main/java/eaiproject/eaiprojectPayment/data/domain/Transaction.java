@@ -22,9 +22,8 @@ public class Transaction {
 	}
 	
 	
-	public Transaction(Customer customer, Integer transaction_id, Integer order_id, Double total_order_price) {
+	public Transaction(Customer customer, Integer order_id, Double total_order_price) {
 		this.customer = customer;
-		this.transaction_id = transaction_id;
 		this.order_id = order_id;
 		this.transaction_date = new Timestamp(System.currentTimeMillis());
 		this.total_order_price = total_order_price;

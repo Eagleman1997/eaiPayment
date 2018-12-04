@@ -5,26 +5,26 @@
 
 package eaiproject.eaiprojectPayment.business.client;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import java.util.UUID;
 
-import eaiproject.eaiprojectPayment.api.model.OrderMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import eaiproject.eaiprojectPayment.data.domain.Customer;
+
 
 
 @Component
 public class CustomerServiceClient {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private Logger logger = LoggerFactory.getLogger(CustomerServiceClient.class);
 
     public Customer retrieveCustomerById(Integer customerId) {
-        return restTemplate.getForObject("http://localhost:8080/camel/customer/"  + customerId, Customer.class);
+        return new Customer(1, "Lukas", "Gehrig", "Musterstrasse 1", "8000 Zürich", "VIP1");
     }
 
     public void editLoyaltyBalance(Customer customer) {
-        restTemplate.put("http://localhost:8080/camel/loyalty/" + customer.getCustomer_id(), new HttpEntity<>(customer), OrderMessage.class);
+        logger.info("customerId: " + customer.getCustomer_id() + ". points " + customer.getNmbr_of_loyalty_points());
     }
 }

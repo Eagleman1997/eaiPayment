@@ -2,6 +2,7 @@ package eaiproject.eaiprojectPayment.business.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,15 +32,17 @@ public class PaymentService {
 	@Autowired
 	private OrderRepository orderRepository;
 
-	public Transaction processPayment(Integer customerId, Integer transaction_id, Integer order_id,
-			Double total_order_price) throws Exception {
-		Customer customer = customerService.retrieveCustomerById(customerId);
-		Transaction transaction = new Transaction(customerRespository.findCustomerByCustomerId(customerId),
-				transaction_id, order_id, total_order_price);
-		Order order = orderRepository.findOrderByOrderId(order_id);
-		calculateCustomerPoints(customerId, total_order_price);
-		Discount discount = calculateDiscount(customerId, total_order_price, order.getShampoos().size());
-		transaction.setTotal_order_price(total_order_price - discount.getFactor());
+	public Transaction processPayment(Integer customerId, Integer order_id, Double total_order_price) throws Exception {
+			
+		Customer customer = customerService.retrieveCustomerById(customerId); // Get Customer
+		Order order = orderRepository.findOrderByOrderId(order_id); // Get Order		
+		
+		Transaction transaction = new Transaction(customer, order_id, total_order_price); //Create new Transaction
+		calculateCustomerPoints(customerId, total_order_price); // Calculating is this a new VIP-Class
+		Discount discount = calculateDiscount(customerId, total_order_price, order.getShampoos().size()); // Create new Discount
+		
+		transaction.setTotal_order_price(total_order_price - (total_order_price * discount.getFactor()));
+		
 		if (total_order_price > 0) {
 			try {
 				transaction.setTransaction_id(
