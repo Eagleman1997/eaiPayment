@@ -1,76 +1,71 @@
 package eaiproject.eaiprojectPayment.data.domain;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import javax.persistence.*;
-
 @Entity
 public class Transaction {
-	
-	@Id @GeneratedValue
-	private Customer customer;
-	private Integer transaction_id;
-	private Integer order_id;
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date transaction_date;
-	private Double total_order_price;
-	private Boolean Canceled;
-	
-	public Transaction(){
-		super();
-	}
-	
-	
-	public Transaction(Customer customer, Integer order_id, Double total_order_price) {
-		this.customer = customer;
-		this.order_id = order_id;
-		this.transaction_date = new Timestamp(System.currentTimeMillis());
-		this.total_order_price = total_order_price;
-	}
-	
-	public Integer getTransaction_id() {
-		return transaction_id;
-	}
 
-	public void setTransaction_id(Integer transaction_id) {
-		this.transaction_id = transaction_id;
-	}
+    @Id
+    @GeneratedValue
+    private Customer customer;
+    private Integer transaction_id;
+    private Integer order_id;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date transaction_date;
+    private Double total_order_price;
+    private Boolean Canceled;
 
-	public Date getTransaction_date() {
-		return transaction_date;
-	}
+    public Transaction() {
+        super();
+    }
 
-	public void setTransaction_date(Date transaction_date) {
-		this.transaction_date = transaction_date;
-	}
+    public Transaction(Customer customer, Integer order_id, Double total_order_price) {
+        this.customer = customer;
+        this.order_id = order_id;
+        this.transaction_date = new Timestamp(System.currentTimeMillis());
+        this.total_order_price = total_order_price;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public Integer getTransaction_id() {
+        return transaction_id;
+    }
 
+    public void setTransaction_id(Integer transaction_id) {
+        this.transaction_id = transaction_id;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public Date getTransaction_date() {
+        return transaction_date;
+    }
 
+    public void setTransaction_date(Date transaction_date) {
+        this.transaction_date = transaction_date;
+    }
 
-	public Double getTotal_order_price() {
-		return total_order_price;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setTotal_order_price(Double total_order_price) {
-		this.total_order_price = total_order_price;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
+    public Double getTotal_order_price() {
+        return total_order_price;
+    }
 
-	public Boolean getCanceled() {
-		return Canceled;
-	}
+    public void setTotal_order_price(Double total_order_price) {
+        this.total_order_price = total_order_price;
+    }
 
+    public Boolean getCanceled() {
+        return Canceled;
+    }
 
-	public void setCanceled(Boolean canceled) {
-		Canceled = canceled;
-	}
+    public void setCanceled(Boolean canceled) {
+        Canceled = canceled;
+    }
 
 }

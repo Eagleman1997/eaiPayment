@@ -5,15 +5,10 @@
 
 package eaiproject.eaiprojectPayment.business.client;
 
-import java.util.UUID;
-
+import eaiproject.eaiprojectPayment.data.domain.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import eaiproject.eaiprojectPayment.data.domain.Customer;
-
-
 
 @Component
 public class CustomerServiceClient {

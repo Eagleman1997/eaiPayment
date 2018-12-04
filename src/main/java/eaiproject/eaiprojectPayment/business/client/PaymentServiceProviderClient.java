@@ -5,12 +5,10 @@
 
 package eaiproject.eaiprojectPayment.business.client;
 
-import org.springframework.stereotype.Component;
-
 import eaiproject.eaiprojectPayment.data.domain.Customer;
 import eaiproject.eaiprojectPayment.data.domain.Transaction;
+import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.UUID;
 
 @Component
@@ -19,7 +17,7 @@ public class PaymentServiceProviderClient {
         return new Transaction(customer, order_id, total_order_price);
     }
 
-	public Integer chargeCreditCard(Double total_order_price, String creditcard_number) {
-		return new Integer(UUID.randomUUID().toString());
-	}
+    public Integer chargeCreditCard(Double total_order_price, String creditcard_number) {
+        return new Integer(UUID.randomUUID().toString());
+    }
 }

@@ -5,15 +5,11 @@
 
 package eaiproject.eaiprojectPayment.stream.message;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import eaiproject.eaiprojectPayment.data.domain.Shampoo;
 
-
-
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 
 public class OrderMessage {
     private String orderId;
@@ -25,14 +21,14 @@ public class OrderMessage {
     private String trackingId;
     private String packingSlipId;
     private String status;
-	private String first_name;
-	private String last_name;
-	private String shipping_address_name;
-	private String shipping_address_street;
-	private String shipping_address_location;
-	private String loyalityPoints;
-	private String parcel_service;
-	private Date creation_date;
+    private String first_name;
+    private String last_name;
+    private String shipping_address_name;
+    private String shipping_address_street;
+    private String shipping_address_location;
+    private String loyalityPoints;
+    private String parcel_service;
+    private Date creation_date;
 
     public OrderMessage() {
     }
@@ -41,23 +37,23 @@ public class OrderMessage {
         this.orderId = orderId;
         this.customerId = customerId;
         if (amount == 0.00) {
-    		double price = 0.00;
-    		for (Shampoo shampoo : shampoos) {
-    			price += shampoo.getPrice();
-    		}
-    		this.amount = price;
+            double price = 0.00;
+            for (Shampoo shampoo : shampoos) {
+                price += shampoo.getPrice();
+            }
+            this.amount = price;
         } else {
-        	this.amount = amount;
+            this.amount = amount;
         }
         this.amount = amount;
         this.numberOfItems = numberOfItems;
         this.shampoos = shampoos;
-    	this.first_name = first_name;
-    	this.last_name = last_name;
-    	this.shipping_address_name = shipping_address_name;
-    	this.shipping_address_street = shipping_address_street;
-    	this.shipping_address_location = shipping_address_location;
-    	this.parcel_service = parcel_service;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.shipping_address_name = shipping_address_name;
+        this.shipping_address_street = shipping_address_street;
+        this.shipping_address_location = shipping_address_location;
+        this.parcel_service = parcel_service;
         this.status = status;
         this.creation_date = new Timestamp(System.currentTimeMillis());
     }
@@ -133,34 +129,18 @@ public class OrderMessage {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-	public String getLoyalityPoints() {
-		return loyalityPoints;
-	}
 
-	public void setLoyalityPoints(String loyalityPoints) {
-		this.loyalityPoints = loyalityPoints;
-	}
+    public String getLoyalityPoints() {
+        return loyalityPoints;
+    }
+
+    public void setLoyalityPoints(String loyalityPoints) {
+        this.loyalityPoints = loyalityPoints;
+    }
 
     @Override
     public String toString() {
-        return "OrderMessage{" +
-                "orderId='" + orderId + '\'' +
-                ", customerId='" + customerId + '\'' +
-                ", amount=" + amount +
-                ", numberOfItems=" + numberOfItems +
-                ", items=" + shampoos.toString() +
-                ", transactionId='" + transactionId + '\'' +
-                ", trackingId='" + trackingId + '\'' +
-                ", packingSlipId='" + packingSlipId + '\'' +
-                ", status='" + status + '\'' +
-                ", first_name=" + first_name +
-                ", last_name=" + last_name +
-                ", shipping_address_name='" + shipping_address_name + '\'' +
-                ", shipping_address_street='" + shipping_address_street + '\'' +
-                ", shipping_address_location='" + shipping_address_location + '\'' +
-                ", parcel_service='" + parcel_service + '\'' +
-                '}';
+        return "OrderMessage{" + "orderId='" + orderId + '\'' + ", customerId='" + customerId + '\'' + ", amount=" + amount + ", numberOfItems=" + numberOfItems + ", items=" + shampoos.toString() + ", transactionId='" + transactionId + '\'' + ", trackingId='" + trackingId + '\'' + ", packingSlipId='" + packingSlipId + '\'' + ", status='" + status + '\'' + ", first_name=" + first_name + ", last_name=" + last_name + ", shipping_address_name='" + shipping_address_name + '\'' + ", shipping_address_street='" + shipping_address_street + '\'' + ", shipping_address_location='" + shipping_address_location + '\'' + ", parcel_service='" + parcel_service + '\'' + '}';
     }
 
     public static class OrderItem {
@@ -203,11 +183,7 @@ public class OrderMessage {
 
         @Override
         public String toString() {
-            return "OrderItem{" +
-                    "itemId='" + itemId + '\'' +
-                    ", productId='" + productId + '\'' +
-                    ", quantity=" + quantity +
-                    '}';
+            return "OrderItem{" + "itemId='" + itemId + '\'' + ", productId='" + productId + '\'' + ", quantity=" + quantity + '}';
         }
     }
 

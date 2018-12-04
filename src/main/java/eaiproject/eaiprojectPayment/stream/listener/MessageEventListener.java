@@ -5,6 +5,10 @@
 
 package eaiproject.eaiprojectPayment.stream.listener;
 
+import eaiproject.eaiprojectPayment.business.service.PaymentService;
+import eaiproject.eaiprojectPayment.data.domain.Transaction;
+import eaiproject.eaiprojectPayment.stream.message.EventMessage;
+import eaiproject.eaiprojectPayment.stream.message.OrderMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +23,22 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import eaiproject.eaiprojectPayment.business.service.PaymentService;
-import eaiproject.eaiprojectPayment.data.domain.Transaction;
-import eaiproject.eaiprojectPayment.stream.message.EventMessage;
-import eaiproject.eaiprojectPayment.stream.message.OrderMessage;
-
 @Component
 @EnableBinding({Sink.class, Source.class})
 public class MessageEventListener {
 
+    private static Logger logger = LoggerFactory.getLogger(MessageEventListener.class);
     @Autowired
     @Output(Source.OUTPUT)
     private MessageChannel messageChannel;
-
     @Autowired
     private PaymentService paymentService;
 
-    private static Logger logger = LoggerFactory.getLogger(MessageEventListener.class);
-
-    @StreamListener(target = Sink.INPUT,
-            condition="headers['type']=='RequestPayment'")
+    @StreamListener(target = Sink.INPUT, condition = "headers['type']=='RequestPayment'")
     @Transactional
     public void payment(@Payload EventMessage<OrderMessage> eventMessage) throws Exception {
         OrderMessage orderMessage = eventMessage.getPayload();
-        logger.info("Payload received: "+orderMessage.toString());
+        logger.info("Payload received: " + orderMessage.toString());
         Transaction transaction = paymentService.processPayment(Integer.parseInt(orderMessage.getCustomerId()), Integer.parseInt(orderMessage.getOrderId()), orderMessage.getAmount());
         orderMessage.setTransactionId(String.valueOf(transaction.getTransaction_id()));
         orderMessage.setStatus("PaymentReceived");
@@ -54,5 +50,6 @@ public class MessageEventListener {
     }
 
     @StreamListener(target = Sink.INPUT)
-    public void defaultListener() {}
+    public void defaultListener() {
+    }
 }
