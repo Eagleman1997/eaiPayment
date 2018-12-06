@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "ORDER_TABLE")
 public class Order {
 
     @Id
-    private Integer order_id;
+    private Integer orderId;
     private Double total_order_price;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -18,17 +19,17 @@ public class Order {
         super();
     }
 
-    public Order(Integer order_id, Double total_order_price) {
-        this.order_id = order_id;
+    public Order(Integer orderId, Double total_order_price) {
+        this.orderId = orderId;
         this.total_order_price = total_order_price;
     }
 
-    public Integer getOrder_id() {
-        return order_id;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public List<Shampoo> getShampoos() {

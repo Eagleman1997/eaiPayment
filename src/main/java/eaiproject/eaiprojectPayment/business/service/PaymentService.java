@@ -41,7 +41,7 @@ public class PaymentService {
 
         if (total_order_price > 0) {
             try {
-                transaction.setTransaction_id(chargeCreditCard(customer, total_order_price, transaction).getTransaction_id());
+                transaction.setTransactionId(chargeCreditCard(customer, total_order_price, transaction).getTransactionId());
                 transaction.setCanceled(false);
             } catch (Exception e) {
                 transaction.setCanceled(true);
@@ -116,7 +116,7 @@ public class PaymentService {
     }
 
     private Transaction chargeCreditCard(Customer customer, Double total_order_price, Transaction transaction) {
-        transaction.setTransaction_id(psp.chargeCreditCard(total_order_price, customer.getCreditcard_number()));
+        transaction.setTransactionId(psp.chargeCreditCard(total_order_price, customer.getCreditcard_number()));
         return transaction;
     }
 

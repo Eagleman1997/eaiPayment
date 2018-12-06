@@ -9,8 +9,9 @@ public class Transaction {
 
     @Id
     @GeneratedValue
+    private Integer transactionId;
+    @ManyToOne
     private Customer customer;
-    private Integer transaction_id;
     private Integer order_id;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transaction_date;
@@ -28,12 +29,12 @@ public class Transaction {
         this.total_order_price = total_order_price;
     }
 
-    public Integer getTransaction_id() {
-        return transaction_id;
+    public Integer getTransactionId() {
+        return transactionId;
     }
 
-    public void setTransaction_id(Integer transaction_id) {
-        this.transaction_id = transaction_id;
+    public void setTransactionId(Integer transactionId) {
+        this.transactionId = transactionId;
     }
 
     public Date getTransaction_date() {

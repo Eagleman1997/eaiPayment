@@ -9,7 +9,7 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    private Integer customer_id;
+    private Integer customerId;
     private String first_name;
     private String last_name;
     private String creditcard_provider;
@@ -26,8 +26,8 @@ public class Customer {
         super();
     }
 
-    public Customer(Integer customer_id, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location) {
-        this.customer_id = customer_id;
+    public Customer(Integer customerId, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location) {
+        this.customerId = customerId;
         this.first_name = first_name;
         this.last_name = last_name;
         this.shipping_address_name = shipping_address_name;
@@ -36,12 +36,12 @@ public class Customer {
         this.customerType = "NORMAL";
     }
 
-    public Integer getCustomer_id() {
-        return customer_id;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer_id(Integer customer_id) {
-        this.customer_id = customer_id;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     public String getFirst_name() {

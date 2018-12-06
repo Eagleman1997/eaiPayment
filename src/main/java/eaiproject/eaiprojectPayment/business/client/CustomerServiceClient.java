@@ -20,6 +20,6 @@ public class CustomerServiceClient {
     }
 
     public void editLoyaltyBalance(Customer customer) {
-        logger.info("customerId: " + customer.getCustomer_id() + ". points " + customer.getNmbr_of_loyalty_points());
+        logger.info("customerId: " + customer.getCustomerId() + ". points " + customer.getNmbr_of_loyalty_points());
     }
 }
