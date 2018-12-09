@@ -26,14 +26,28 @@ public class Customer {
         super();
     }
 
-    public Customer(Integer customerId, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location) {
+    /**
+     * Create a new Customer
+     * Special: With customerType and also loyalityPoints
+     * @param customerId
+     * @param first_name
+     * @param last_name
+     * @param shipping_address_name
+     * @param shipping_address_street
+     * @param shipping_address_location
+     * @param customerType
+     * @param loyalityPoints
+     * @author Lukas Weber
+     */
+    public Customer(Integer customerId, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location, String customerType, Integer loyalityPoints) {
         this.customerId = customerId;
         this.first_name = first_name;
         this.last_name = last_name;
         this.shipping_address_name = shipping_address_name;
         this.shipping_address_street = shipping_address_street;
         this.shipping_address_location = shipping_address_location;
-        this.customerType = "NORMAL";
+        this.customerType = customerType;
+        this.nmbr_of_loyalty_points = loyalityPoints;
     }
 
     public Integer getCustomerId() {

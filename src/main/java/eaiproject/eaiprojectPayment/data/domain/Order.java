@@ -19,6 +19,12 @@ public class Order {
         super();
     }
 
+    /**
+     * Create new Order
+     * @param orderId
+     * @param total_order_price
+     * @author Lukas Weber
+     */
     public Order(Integer orderId, Double total_order_price) {
         this.orderId = orderId;
         this.total_order_price = total_order_price;

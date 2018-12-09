@@ -34,6 +34,14 @@ public class MessageEventListener {
     @Autowired
     private PaymentService paymentService;
 
+    /**
+     * Search for the call RequestPayment do the payment
+     * Generate a new Transaction
+     * Set in the order the TransactionId 
+     * @param eventMessage
+     * @throws Exception
+     * @author Lukas Weber
+     */
     @StreamListener(target = Sink.INPUT, condition = "headers['type']=='RequestPayment'")
     @Transactional
     public void payment(@Payload EventMessage<OrderMessage> eventMessage) throws Exception {

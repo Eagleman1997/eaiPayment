@@ -22,6 +22,13 @@ public class Transaction {
         super();
     }
 
+    /**
+     * Genereate new Transaction
+     * @param customer
+     * @param order_id
+     * @param total_order_price
+     * @author Lukas Weber
+     */
     public Transaction(Customer customer, Integer order_id, Double total_order_price) {
         this.customer = customer;
         this.order_id = order_id;

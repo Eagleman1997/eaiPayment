@@ -33,6 +33,25 @@ public class OrderMessage {
     public OrderMessage() {
     }
 
+    /**
+     * Generate a new OrderMessage
+     * Calculating the amount with the List of items 
+     * Set a timestamp with the current timestamp for creationDate
+     * @param orderId
+     * @param customerId
+     * @param amount
+     * @param numberOfItems
+     * @param shampoos
+     * @param first_name
+     * @param last_name
+     * @param shipping_address_name
+     * @param shipping_address_street
+     * @param shipping_address_location
+     * @param parcel_service
+     * @param status
+     * @param string
+     * @author Lukas Weber
+     */
     public OrderMessage(String orderId, String customerId, Double amount, Integer numberOfItems, List<Shampoo> shampoos, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location, String parcel_service, String status, String string) {
         this.orderId = orderId;
         this.customerId = customerId;

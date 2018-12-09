@@ -28,6 +28,19 @@ public class PaymentService {
     @Autowired
     private OrderRepository orderRepository;
 
+    /**
+     * Gerneate a new Transaction 
+     * First search the customer, then the specific order in the DB
+     * Calculating also the VIP-Class for the customer
+     * Calculating also the discount for the customer with the VIP-Class
+     * possible to cancel the order if its not work
+     * @param customerId
+     * @param order_id
+     * @param total_order_price
+     * @return transaction
+     * @throws Exception
+     * @author Lukas Weber
+     */
     public Transaction processPayment(Integer customerId, Integer order_id, Double total_order_price) throws Exception {
 
         Customer customer = customerService.retrieveCustomerById(customerId); // Get Customer
@@ -37,7 +50,7 @@ public class PaymentService {
         calculateCustomerPoints(customerId, total_order_price); // Calculating is this a new VIP-Class
         Discount discount = calculateDiscount(customerId, total_order_price, order.getShampoos().size()); // Create new Discount
 
-        transaction.setTotal_order_price(total_order_price - (total_order_price * discount.getFactor()));
+        transaction.setTotal_order_price(total_order_price - (total_order_price * discount.getFactor())); // Price minus the discount
 
         if (total_order_price > 0) {
             try {
@@ -53,6 +66,14 @@ public class PaymentService {
         return transaction;
     }
 
+    /**
+     * Search the correct VIP-Level for the customer with the ordered price
+     * Set the new points for the next time
+     * The points are always the Order Price plus the loyalityPoints
+     * @param customerId
+     * @param total_order_price
+     * @author Lukas Weber
+     */
     private void calculateCustomerPoints(Integer customerId, Double total_order_price) {
         Customer customer = customerService.retrieveCustomerById(customerId);
         Double pointsTemp = customer.getCustomerPoints() + total_order_price;
@@ -73,6 +94,16 @@ public class PaymentService {
 
     }
 
+    /**
+     * Calculating the Discount with the VIP-Level 
+     * VIP1 - VIP4
+     * STUFF / NORMAL and without VIP-level
+     * @param customerId
+     * @param total_order_price
+     * @param numberOfItems
+     * @return discount
+     * @author Lukas Weber
+     */
     public Discount calculateDiscount(Integer customerId, Double total_order_price, Integer numberOfItems) {
         Customer customer = customerService.retrieveCustomerById(customerId);
         if (total_order_price >= 1000 && customer.getCustomerType().equals("VIP1")) {
@@ -115,6 +146,13 @@ public class PaymentService {
         return new Discount(0.00);
     }
 
+    /**
+     * charge the creditcard
+     * @param customer
+     * @param total_order_price
+     * @param transaction
+     * @return transaction
+     */
     private Transaction chargeCreditCard(Customer customer, Double total_order_price, Transaction transaction) {
         transaction.setTransactionId(psp.chargeCreditCard(total_order_price, customer.getCreditcard_number()));
         return transaction;
