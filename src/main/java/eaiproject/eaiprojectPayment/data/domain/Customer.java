@@ -47,7 +47,7 @@ public class Customer {
         this.shipping_address_street = shipping_address_street;
         this.shipping_address_location = shipping_address_location;
         this.customerType = customerType;
-        this.nmbr_of_loyalty_points = loyalityPoints;
+        this.customerPoints = loyalityPoints;
     }
 
     public Integer getCustomerId() {

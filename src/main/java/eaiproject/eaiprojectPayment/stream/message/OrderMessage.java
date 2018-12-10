@@ -5,11 +5,13 @@
 
 package eaiproject.eaiprojectPayment.stream.message;
 
-import eaiproject.eaiprojectPayment.data.domain.Shampoo;
-
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import eaiproject.eaiprojectPayment.data.domain.Shampoo;
+
 
 public class OrderMessage {
     private String orderId;
@@ -21,14 +23,14 @@ public class OrderMessage {
     private String trackingId;
     private String packingSlipId;
     private String status;
-    private String first_name;
-    private String last_name;
-    private String shipping_address_name;
-    private String shipping_address_street;
-    private String shipping_address_location;
-    private String loyalityPoints;
-    private String parcel_service;
-    private Date creation_date;
+	private String firstName;
+	private String lastName;
+	private String shippingAddressName;
+	private String shippingAddressStreet;
+	private String shippingAddressLocation;
+	private String loyalityPoints;
+	private String parcelService;
+	private Date creationDate;
 
     public OrderMessage() {
     }
@@ -52,29 +54,28 @@ public class OrderMessage {
      * @param string
      * @author Lukas Weber
      */
-    public OrderMessage(String orderId, String customerId, Double amount, Integer numberOfItems, List<Shampoo> shampoos, String first_name, String last_name, String shipping_address_name, String shipping_address_street, String shipping_address_location, String parcel_service, String status, String string) {
+    public OrderMessage(String orderId, String customerId, Double amount, Integer numberOfItems, List<Shampoo> shampoos, String firstName, String lastName, String shippingAddressName, String shippingAddressStreet, String shippingAddressLocation, String parcelService, String status) {
         this.orderId = orderId;
         this.customerId = customerId;
         if (amount == 0.00) {
-            double price = 0.00;
-            for (Shampoo shampoo : shampoos) {
-                price += shampoo.getPrice();
-            }
-            this.amount = price;
+    		double price = 0.00;
+    		for (Shampoo shampoo : shampoos) {
+    			price += shampoo.getPrice();
+    		}
+    		this.amount = price;
         } else {
-            this.amount = amount;
+        	this.amount = amount;
         }
-        this.amount = amount;
         this.numberOfItems = numberOfItems;
         this.shampoos = shampoos;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.shipping_address_name = shipping_address_name;
-        this.shipping_address_street = shipping_address_street;
-        this.shipping_address_location = shipping_address_location;
-        this.parcel_service = parcel_service;
+    	this.firstName = firstName;
+    	this.lastName = lastName;
+    	this.shippingAddressName = shippingAddressName;
+    	this.shippingAddressStreet = shippingAddressStreet;
+    	this.shippingAddressLocation = shippingAddressLocation;
+    	this.parcelService = parcelService;
         this.status = status;
-        this.creation_date = new Timestamp(System.currentTimeMillis());
+        this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
     public String getOrderId() {
@@ -148,18 +149,100 @@ public class OrderMessage {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+	public String getLoyalityPoints() {
+		return loyalityPoints;
+	}
 
-    public String getLoyalityPoints() {
-        return loyalityPoints;
-    }
+	public void setLoyalityPoints(String loyalityPoints) {
+		this.loyalityPoints = loyalityPoints;
+	}
+	
+	
 
-    public void setLoyalityPoints(String loyalityPoints) {
-        this.loyalityPoints = loyalityPoints;
-    }
+    public List<Shampoo> getShampoos() {
+		return shampoos;
+	}
 
-    @Override
+	public void setShampoos(List<Shampoo> shampoos) {
+		this.shampoos = shampoos;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getShippingAddressName() {
+		return shippingAddressName;
+	}
+
+	public void setShippingAddressName(String shippingAddressName) {
+		this.shippingAddressName = shippingAddressName;
+	}
+
+	public String getShippingAddressStreet() {
+		return shippingAddressStreet;
+	}
+
+	public void setShippingAddressStreet(String shippingAddressStreet) {
+		this.shippingAddressStreet = shippingAddressStreet;
+	}
+
+	public String getShippingAddressLocation() {
+		return shippingAddressLocation;
+	}
+
+	public void setShippingAddressLocation(String shippingAddressLocation) {
+		this.shippingAddressLocation = shippingAddressLocation;
+	}
+
+	public String getParcelService() {
+		return parcelService;
+	}
+
+	public void setParcelService(String parcelService) {
+		this.parcelService = parcelService;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	@Override
     public String toString() {
-        return "OrderMessage{" + "orderId='" + orderId + '\'' + ", customerId='" + customerId + '\'' + ", amount=" + amount + ", numberOfItems=" + numberOfItems + ", items=" + shampoos.toString() + ", transactionId='" + transactionId + '\'' + ", trackingId='" + trackingId + '\'' + ", packingSlipId='" + packingSlipId + '\'' + ", status='" + status + '\'' + ", first_name=" + first_name + ", last_name=" + last_name + ", shipping_address_name='" + shipping_address_name + '\'' + ", shipping_address_street='" + shipping_address_street + '\'' + ", shipping_address_location='" + shipping_address_location + '\'' + ", parcel_service='" + parcel_service + '\'' + '}';
+        return "OrderMessage{" +
+                "orderId='" + orderId + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", amount=" + amount +
+                ", numberOfItems=" + numberOfItems +
+                ", items=" + shampoos.toString() +
+                ", transactionId='" + transactionId + '\'' +
+                ", trackingId='" + trackingId + '\'' +
+                ", packingSlipId='" + packingSlipId + '\'' +
+                ", status='" + status + '\'' +
+                ", first_name=" + firstName +
+                ", last_name=" + lastName +
+                ", shipping_address_name='" + shippingAddressName + '\'' +
+                ", shipping_address_street='" + shippingAddressStreet + '\'' +
+                ", shipping_address_location='" + shippingAddressLocation + '\'' +
+                ", parcel_service='" + parcelService + '\'' +
+                '}';
     }
 
     public static class OrderItem {
@@ -202,7 +285,11 @@ public class OrderMessage {
 
         @Override
         public String toString() {
-            return "OrderItem{" + "itemId='" + itemId + '\'' + ", productId='" + productId + '\'' + ", quantity=" + quantity + '}';
+            return "OrderItem{" +
+                    "itemId='" + itemId + '\'' +
+                    ", productId='" + productId + '\'' +
+                    ", quantity=" + quantity +
+                    '}';
         }
     }
 

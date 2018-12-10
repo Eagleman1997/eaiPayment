@@ -5,6 +5,7 @@ import eaiproject.eaiprojectPayment.business.client.PaymentServiceProviderClient
 import eaiproject.eaiprojectPayment.data.domain.Customer;
 import eaiproject.eaiprojectPayment.data.domain.Discount;
 import eaiproject.eaiprojectPayment.data.domain.Order;
+import eaiproject.eaiprojectPayment.data.domain.Shampoo;
 import eaiproject.eaiprojectPayment.data.domain.Transaction;
 import eaiproject.eaiprojectPayment.data.repository.CustomerRepository;
 import eaiproject.eaiprojectPayment.data.repository.OrderRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
@@ -41,10 +43,10 @@ public class PaymentService {
      * @throws Exception
      * @author Lukas Weber
      */
-    public Transaction processPayment(Integer customerId, Integer order_id, Double total_order_price) throws Exception {
+    public Transaction processPayment(Integer customerId, Integer order_id, List<Shampoo> shampoos, Double total_order_price) throws Exception {
 
         Customer customer = customerService.retrieveCustomerById(customerId); // Get Customer
-        Order order = orderRepository.findOrderByOrderId(order_id); // Get Order
+        Order order = new Order(order_id, shampoos, total_order_price); // create Order
 
         Transaction transaction = new Transaction(customer, order_id, total_order_price); //Create new Transaction
         calculateCustomerPoints(customerId, total_order_price); // Calculating is this a new VIP-Class
@@ -62,7 +64,6 @@ public class PaymentService {
                 throw new Exception("Credit card transaction failed due to " + e.getMessage() + ".");
             }
         }
-        transactionRepository.save(transaction);
         return transaction;
     }
 
@@ -154,7 +155,7 @@ public class PaymentService {
      * @return transaction
      */
     private Transaction chargeCreditCard(Customer customer, Double total_order_price, Transaction transaction) {
-        transaction.setTransactionId(psp.chargeCreditCard(total_order_price, customer.getCreditcard_number()));
+        transaction.setTransactionId(psp.chargeCreditCard(total_order_price, UUID.randomUUID().toString()));
         return transaction;
     }
 

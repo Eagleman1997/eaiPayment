@@ -25,8 +25,9 @@ public class Order {
      * @param total_order_price
      * @author Lukas Weber
      */
-    public Order(Integer orderId, Double total_order_price) {
+    public Order(Integer orderId, List<Shampoo> shampoos, Double total_order_price) {
         this.orderId = orderId;
+        this.shampoos = shampoos;
         this.total_order_price = total_order_price;
     }
 

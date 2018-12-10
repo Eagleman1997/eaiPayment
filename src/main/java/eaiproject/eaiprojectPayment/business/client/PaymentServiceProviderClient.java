@@ -33,6 +33,6 @@ public class PaymentServiceProviderClient {
      * @return new Id for Creditcard
      */
     public Integer chargeCreditCard(Double total_order_price, String creditcard_number) {
-        return new Integer(UUID.randomUUID().toString());
+        return new Integer(665);
     }
 }

@@ -12,7 +12,7 @@ public class Transaction {
     private Integer transactionId;
     @ManyToOne
     private Customer customer;
-    private Integer order_id;
+    private Integer orderId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date transaction_date;
     private Double total_order_price;
@@ -31,7 +31,7 @@ public class Transaction {
      */
     public Transaction(Customer customer, Integer order_id, Double total_order_price) {
         this.customer = customer;
-        this.order_id = order_id;
+        this.orderId = order_id;
         this.transaction_date = new Timestamp(System.currentTimeMillis());
         this.total_order_price = total_order_price;
     }

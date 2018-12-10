@@ -47,7 +47,7 @@ public class MessageEventListener {
     public void payment(@Payload EventMessage<OrderMessage> eventMessage) throws Exception {
         OrderMessage orderMessage = eventMessage.getPayload();
         logger.info("Payload received: " + orderMessage.toString());
-        Transaction transaction = paymentService.processPayment(Integer.parseInt(orderMessage.getCustomerId()), Integer.parseInt(orderMessage.getOrderId()), orderMessage.getAmount());
+        Transaction transaction = paymentService.processPayment(Integer.parseInt(orderMessage.getCustomerId()), Integer.parseInt(orderMessage.getOrderId()), orderMessage.getItems(), orderMessage.getAmount());
         orderMessage.setTransactionId(String.valueOf(transaction.getTransactionId()));
         orderMessage.setStatus("PaymentReceived");
         send(new EventMessage<>("FetchGoods", orderMessage));
