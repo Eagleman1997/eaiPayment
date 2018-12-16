@@ -1,0 +1,284 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2055{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil Consolas;}{\f2\fnil\fcharset0 Consolas;}}
+{\colortbl ;\red0\green77\blue187;\red0\green0\blue0;\red198\green219\blue174;\red106\green62\blue62;\red127\green0\blue85;\red63\green127\blue95;\red212\green212\blue212;\red42\green0\blue255;\red240\green216\blue168;\red0\green0\blue192;\red232\green242\blue254;\red100\green100\blue100;\red255\green255\blue0;}
+{\*\generator Riched20 10.0.17134}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\cf1\b\f0\fs22\lang7 Erster Breakpoint\cf0\b0 : [eaieShop].[CheckoutController]\par
+Es wird der Checkout von Lukas aufbereitet gem\'e4ss der Bestellung via ShopStaintly und dem dort vorhandenen Verkaufs-Bot. \par
+Lukas hat alles in allem 4 Shampoos / Duschgeels gekauft:\par
+\cf2\highlight3\f1\fs16  \tab List<Shampoo> \cf4 shampoos\cf2  = \cf5\b new\cf2\b0  ArrayList<>();\cf0\highlight0\par
+\cf2     \tab\cf0\par
+\cf2     \tab\cf6 // Generate some \ul Shampoos\cf0\ulnone\par
+\cf2     \tab\cf4 shampoos\cf2 .\highlight7 add\highlight0 (\cf5\b new\cf2\b0  Shampoo(\cf5\b new\cf2\b0  Integer(5), \cf8 "Deep Space"\cf2 , \cf8 "Axe"\cf2 , \cf8 "AllinOneXL"\cf2 , 8.30));\cf0\par
+\cf2     \tab\cf4 shampoos\cf2 .\highlight7 add\highlight0 (\cf5\b new\cf2\b0  Shampoo(\cf5\b new\cf2\b0  Integer(6), \cf8 "Africa"\cf2 , \cf8 "Axe"\cf2 , \cf8 "AllinOneXL"\cf2 , 9.30));\cf0\par
+\cf2     \tab\cf4 shampoos\cf2 .\highlight7 add\highlight0 (\cf5\b new\cf2\b0  Shampoo(\cf5\b new\cf2\b0  Integer(7), \cf8 "Adrenaline"\cf2 , \cf8 "Axe"\cf2 , \cf8 "AllinOneXL"\cf2 , 5.30));\cf0\par
+\cf2     \tab\cf4 shampoos\cf2 .\highlight7 add\highlight0 (\cf5\b new\cf2\b0  Shampoo(\cf5\b new\cf2\b0  Integer(8), \cf8 "Excite"\cf2 , \cf8 "Axe"\cf2 , \cf8 "AllinOneXL"\cf2 , 10.30));\cf0\par
+\cf2\f2\fs20\lang2055 ShopStaintly hat im Hintergrund, durch den schon vorgekommenen kauf von Lukas, die sonstigen Daten wie Lieferadresse und bevorzugter Lieferdienst gespeichert.\f1\lang7    \par
+\fs16         OrderMessage \cf4 orderMessage\cf2  = \cf5\b new\cf2\b0  OrderMessage(\cf0\par
+\cf2         \tab\tab\cf5\b new\cf2\b0  Integer(11).toString(), \cf6 // OrderId (New)\cf0\par
+\cf2         \tab\tab\cf8 "1"\cf2 , \cf6 // CustomerId\cf0\par
+\cf2         \tab\tab 0.00, \cf6 // Amount - Double // \ul Wenn\ulnone  \ul nichts\ulnone  \ul mitgegeben\ulnone  \ul wird\ulnone  \ul das\ulnone  \ul berechnet\ulnone  \ul von\ulnone  den \ul Shampoos\cf0\ulnone\par
+\cf2         \tab\tab 3, \cf6 //NumersOfItem - Integer\cf0\par
+\cf2         \tab\tab\cf4 shampoos\cf2 , \cf6 // \ul shampoos\cf0\ulnone\par
+\cf2         \tab\tab\cf8 "Lukas"\cf2 , \cf6 // First Name\cf0\par
+\cf2         \tab\tab\cf8 "Gehrig"\cf2 , \cf6 // Last Name\cf0\par
+\cf2         \tab\tab\cf8 "Lukas Gehrig"\cf2 , \cf6 // shipping_address_name\cf0\par
+\cf2         \tab\tab\cf8 "Musterstrasse 1"\cf2 , \cf6 // shipping_address_street\cf0\par
+\cf2         \tab\tab\cf8 "8000 Z\f2\'fcrich"\cf2\f1 , \cf6 // shipping_address_location\cf0\par
+\cf2         \tab\tab\cf8 "DHL"\cf2 , \cf6 // parcel_service\cf0\par
+\cf2         \tab\tab\cf8 "OrderPlaced"\cf0\par
+\cf2         \tab\tab );\par
+\f2\fs20\lang2055\par
+Die dazu vorbereitete Message \'e4ndert nun den Status auf "OrderPlaced". Ebenfalls wird der EventMessage, welche nun via HTTP in die Queue von RabbitMQ versendet wird, das Stichwort "RequestPayment" mitgegeben und die Message wird versendet.\f1\lang7\par
+\fs16         \cf4 orderMessage\cf2 .setStatus(\cf8 "OrderPlaced"\cf2 );\cf0\par
+\cf2         \ul EventMessage\ulnone  \cf4\highlight9 message\cf2\highlight0  = \cf5\b new\cf2\b0  EventMessage<>(\cf8 "RequestPayment"\cf2 , \cf4 orderMessage\cf2 );\cf0\par
+\cf2         \cf10 eventSender\cf2 .send(\cf4\highlight7\ul message\cf2\highlight0\ulnone );\cf0\par
+\cf2         \cf5\b return\cf2\b0  ResponseEntity.\i ok\i0 (\cf4 orderMessage\cf2 .toString());\par
+\fs20\par
+\par
+\cf1\b\f0\fs22 Zweiter Breakpoint\cf0\b0 : [eaiPayment].[MessageEventListener]\par
+Durch den Header der EventMessage "RequestPayment" nimmt dieser Listener hier die Message auf und geht damit in die Verarbeitung in diesem Service.\par
+\cf2\highlight11\f1\fs16    \cf12 @StreamListener\cf2 (target = Sink.\cf10\b\i INPUT\cf2\b0\i0 , condition = \cf8 "headers['type']=='RequestPayment'"\cf2 )\fs20\par
+\highlight0\par
+\f2\lang2055 Zuerst wird der Body (hier als Payload) aus der EventMessage raus geholt und auf die OrderMessage gemappt. Die Klasse OrderMessage in diesem Service ist genau gleich aufgebaut wie im eaieShop.\par
+\highlight3\f1\fs16         OrderMessage \cf4 orderMessage\cf2  = \cf4 eventMessage\cf2 .getPayload();\par
+\highlight0\fs20\lang7  \tab\par
+\f2\lang2055 Nachdem der Logger in die Console geschrieben hat, was er bekommen hat, wird die Methode "processPayment" aufgerufen.\par
+\f1\fs16   \cf10\i logger\cf2\i0 .info(\cf8 "Payload received: "\cf2  + \cf4 orderMessage\cf2 .toString());\f2\par
+\i\f1 2018-12-15 07:45:55.604  INFO 592 --- [qSqaUqYHI8RwA-1] e.e.s.listener.MessageEventListener      : Payload received: OrderMessage\{orderId='11', customerId='1', amount=33.2, numberOfItems=3, items=[eaiproject.eaiprojectPayment.data.domain.Shampoo@6243d98b, eaiproject.eaiprojectPayment.data.domain.Shampoo@4625fb60, eaiproject.eaiprojectPayment.data.domain.Shampoo@5414113f, eaiproject.eaiprojectPayment.data.domain.Shampoo@60cbfa51], transactionId='null', trackingId='null', packingSlipId='null', status='OrderPlaced', first_name=Lukas, last_name=Gehrig, shipping_address_name='Lukas Gehrig', shipping_address_street='Musterstrasse 1', shipping_address_location='8000 Z\f2\'fcrich', parcel_service='DHL'\}\cf0\i0\f1\fs20\par
+\cf2\highlight3\fs16 Transaction \cf4 transaction\cf2  = \cf10 paymentService\cf2 .processPayment(Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getCustomerId()), Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getOrderId()), \cf4 orderMessage\cf2 .getItems(), \cf4 orderMessage\cf2 .getAmount());\fs20\par
+\cf0\highlight0\f0\fs22\lang7\par
+In dieser Methode wird zuerst der Customer, also Lukas, gesucht und sogleich die neue Bestellung angelegt.\par
+\cf2\highlight3\f1\fs16         Customer \cf4 customer\cf2  = \cf10 customerService\cf2 .retrieveCustomerById(\cf4 customerId\cf2 ); \cf6 // Get Customer\cf0\highlight0\par
+\cf2         Order \cf4 order\cf2  = \cf5\b new\cf2\b0  Order(\cf4 order_id\cf2 , \cf4 shampoos\cf2 , \cf4 total_order_price\cf2 ); \cf6 // create Order\par
+\cf0\f0\fs22 Nun soll eine neue Transaktion erstellt werden f\'fcr Lukas, mit der entsprechenden Bestellung.\par
+\cf2\highlight3\f1\fs16         Transaction \cf4 transaction\cf2  = \cf5\b new\cf2\b0  Transaction(\cf4 customer\cf2 , \cf4 order_id\cf2 , \cf4 total_order_price\cf2 ); \cf6 //Create new Transaction\cf0\highlight0\f0\fs22\par
+\par
+Der Service f\'fchrt eine M\'f6glichkeit Rabatte zu gew\'e4hren. Dazu gibt es verschiedene VIP-Levels die anhand des bereits ausgegeben Betrages in fr\'fcheren Bestellungen ermittelt werden. Lukas ist VIP1, da seine Punkte bereits \'fcber 10000 sind. \par
+\cf2\f1\fs16         calculateCustomerPoints(\cf4 customerId\cf2 , \cf4 total_order_price\cf2 ); \cf6 // Calculating is this a new VIP-Class\cf0\par
+\cf2         Discount \cf4 discount\cf2  = calculateDiscount(\cf4 customerId\cf2 , \cf4 total_order_price\cf2 , \cf4 order\cf2 .getShampoos().size()); \cf6 // Create new Discount\par
+\cf2     \cf5\b private\cf2\b0  \cf5\b void\cf2\b0  calculateCustomerPoints(Integer \cf4 customerId\cf2 , Double \cf4 total_order_price\cf2 ) \{\cf0\par
+\cf2         Customer \cf4 customer\cf2  = \cf10 customerService\cf2 .retrieveCustomerById(\cf4 customerId\cf2 );\cf0\par
+\cf2         Double \cf4 pointsTemp\cf2  = \cf4 customer\cf2 .getCustomerPoints() + \cf4 total_order_price\cf2 ;\cf0\par
+\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 pointsTemp\cf2  >= 10000) \{\cf0\par
+\cf2             \cf4 customer\cf2 .setCustomerType(\cf8 "VIP1"\cf2 );\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 pointsTemp\cf2  >= 20000) \{\cf0\par
+\cf2             \cf4 customer\cf2 .setCustomerType(\cf8 "VIP2"\cf2 );\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 pointsTemp\cf2  >= 30000) \{\cf0\par
+\cf2             \cf4 customer\cf2 .setCustomerType(\cf8 "VIP3"\cf2 );\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 pointsTemp\cf2  >= 40000) \{\cf0\par
+\cf2             \cf4 customer\cf2 .setCustomerType(\cf8 "VIP4"\cf2 );\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf4 customer\cf2 .setCustomerPoints(\cf4 pointsTemp\cf2 .intValue());\cf0\par
+\par
+\cf2     \}\cf0\f0\fs18\par
+\fs20 Errechnet wird nun des Discount anhand der Punkte, also welcher VIP-Level Lukas erreicht hat und auch mit der Menge der Bestellten Ware. Damit ein Discount \'fcberhaupt gegeben werden kann m\'fcsste Lukas 6 weitere Artikel bestellen. Durch den hier schnellen Kauf von Lukas, da er kein Shampoo mehr hat, ist diese Tatsaceh nicht gegeben und er erh\'e4lt keinen Discount.\par
+\cf2\f1\fs16    \cf5\b public\cf2\b0  Discount calculateDiscount(Integer \cf4 customerId\cf2 , Double \cf4 total_order_price\cf2 , Integer \cf4 numberOfItems\cf2 ) \{\cf0\par
+\cf2\highlight3         Customer \cf4 customer\cf2  = \cf10 customerService\cf2 .retrieveCustomerById(\cf4 customerId\cf2 );\cf0\highlight0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  >= 1000 && \cf4 customer\cf2 .getCustomerType().equals(\cf8 "VIP1"\cf2 )) \{\cf0\par
+\cf2             \cf5\b if\cf2\b0  (\cf4 numberOfItems\cf2  >= 10) \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.01);\cf0\par
+\cf2             \} \cf5\b else\cf2\b0  \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.005);\cf0\par
+\cf2             \}\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  >= 1000 && \cf4 customer\cf2 .getCustomerType().equals(\cf8 "VIP2"\cf2 )) \{\cf0\par
+\cf2             \cf5\b if\cf2\b0  (\cf4 numberOfItems\cf2  >= 10) \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.02);\cf0\par
+\cf2             \} \cf5\b else\cf2\b0  \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.01);\cf0\par
+\cf2             \}\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  >= 1000 && \cf4 customer\cf2 .getCustomerType().equals(\cf8 "VIP3"\cf2 )) \{\cf0\par
+\cf2             \cf5\b if\cf2\b0  (\cf4 numberOfItems\cf2  >= 10) \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.03);\cf0\par
+\cf2             \} \cf5\b else\cf2\b0  \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.015);\cf0\par
+\cf2             \}\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  >= 1000 && \cf4 customer\cf2 .getCustomerType().equals(\cf8 "VIP4"\cf2 )) \{\cf0\par
+\cf2             \cf5\b if\cf2\b0  (\cf4 numberOfItems\cf2  >= 10) \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.04);\cf0\par
+\cf2             \} \cf5\b else\cf2\b0  \{\cf0\par
+\cf2                 \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.02);\cf0\par
+\cf2             \}\cf0\par
+\cf2         \}\cf0\par
+\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  >= 500 && \cf4 customer\cf2 .getCustomerType().equals(\cf8 "NORMAL"\cf2 )) \{\cf0\par
+\cf2             \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.05);\cf0\par
+\cf2         \}\cf0\par
+\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 customer\cf2 .getCustomerType().equals(\cf8 "STUFF"\cf2 )) \{\cf0\par
+\cf2             \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.20);\cf0\par
+\cf2         \}\cf0\par
+\par
+\cf2         \cf5\b return\cf2\b0  \cf5\b new\cf2\b0  Discount(0.00);\cf0\par
+\cf2     \}\par
+\par
+\f2\fs20\lang2055 Nun wird der entg\'fcltige Preis ausgemacht. Dieser setzt sich zusammen vom urspr\'fcnglichen Preis der Bestellung abz\'fcglich des errechneten Rabattes. Der ist hier 0.00 somit wird nichts abgezogen.\par
+\highlight3\f1\fs16         \cf4 transaction\cf2 .setTotal_order_price(\cf4 total_order_price\cf2  - (\cf4 total_order_price\cf2  * \cf4 discount\cf2 .getFactor())); \cf6 // Price minus the discount\fs20\par
+\cf0\highlight0\f0\fs14\lang7\par
+\fs20 Nun wird die transaktion durchgef\'fchrt. Sollte dies nicht funktioniern, dann w\'fcrde diese wieder gecancelt. \par
+\cf2\highlight3\f1\fs16         \cf4 transaction\cf2 .setTotal_order_price(\cf4 total_order_price\cf2  - (\cf4 total_order_price\cf2  * \cf4 discount\cf2 .getFactor())); \cf6 // Price minus the discount\cf0\highlight0\par
+\par
+\cf2         \cf5\b if\cf2\b0  (\cf4 total_order_price\cf2  > 0) \{\cf0\par
+\cf2             \cf5\b try\cf2\b0  \{\cf0\par
+\cf2                 \cf4 transaction\cf2 .setTransactionId(chargeCreditCard(\cf4 customer\cf2 , \cf4 total_order_price\cf2 , \cf4 transaction\cf2 ).getTransactionId());\cf0\par
+\cf2                 \cf4 transaction\cf2 .setCanceled(\cf5\b false\cf2\b0 );\cf0\par
+\cf2             \} \cf5\b catch\cf2\b0  (Exception \cf4 e\cf2 ) \{\cf0\par
+\cf2                 \cf4 transaction\cf2 .setCanceled(\cf5\b true\cf2\b0 );\cf0\par
+\cf2                 \cf10 transactionRepository\cf2 .save(\cf4 transaction\cf2 );\cf0\par
+\cf2                 \cf5\b throw\cf2\b0  \cf5\b new\cf2\b0  Exception(\cf8 "Credit card transaction failed due to "\cf2  + \cf4 e\cf2 .getMessage() + \cf8 "."\cf2 );\cf0\par
+\cf2             \}\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b return\cf2\b0  \cf4 transaction\cf2 ;\cf0\par
+\cf2     \}\par
+\par
+\f2\fs20\lang2055 Alles hat geklappt. Die Transaktion konnte durchgef\'fchrt werden. Die TransaktionsId wird nun der OrderMessage hinzugef\'fcgt. Diese erh\'e4lt den Status "PaymentReceived" und wird verpackt in der EventMessage und dem Header "FetchGoods" weitergeleitet an die Queue, damit sich der n\'e4chste Service darum k\'fcmmern kann.\par
+\f1         \cf4\fs16 orderMessage\cf2 .setTransactionId(String.\i valueOf\i0 (\cf4 transaction\cf2 .getTransactionId()));\cf0\par
+\cf2         \cf4 orderMessage\cf2 .setStatus(\cf8 "PaymentReceived"\cf2 );\cf0\par
+\cf2         send(\cf5\b new\cf2\b0  EventMessage<>(\cf8 "FetchGoods"\cf2 , \cf4 orderMessage\cf2 ));\cf0\par
+\cf2     \}\cf0\par
+\f0\fs10\lang7\par
+\cf1\b\fs22 Dritter Breakpoint\cf0\b0 : [eaiIventory].[MessageEventListener]\par
+Durch den Header der EventMessage "FetchGoods" nimmt dieser Listener hier die Message auf und geht damit in die Verarbeitung in diesem Service.\par
+\cf2\f1\fs16     \cf12 @StreamListener\cf2 (target = Sink.\cf10\b\i INPUT\cf2\b0\i0 ,\cf0\par
+\cf2             condition=\cf8 "(headers['type']?:'')=='FetchGoods'"\cf2 )\par
+\f2\fs20\lang2055 Erneut wird die OrderMessage durch den Body der EventMessage zusammengestellt und der Logger schreibt, was er erhalten hat. Hier ist nun auch die TransaktionsId vorhanden.\cf0\f0\fs22\lang7\par
+\cf2\highlight3\f1\fs16         OrderMessage \cf4 orderMessage\cf2  = \cf4 eventMessage\cf2 .getPayload();\cf0\highlight0\par
+\cf2         \cf10\i logger\cf2\i0 .info(\cf8 "Payload received: "\cf2 +\cf4 orderMessage\cf2 .toString());\par
+\i 2018-12-15 08:05:29.335  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.s.listener.MessageEventListener      : Payload received: OrderMessage\{orderId='11', customerId='1', amount=33.2, numberOfItems=3, items=[eaiproject.eaiprojectInventory.data.domain.Shampoo@636280e0, eaiproject.eaiprojectInventory.data.domain.Shampoo@36652442, eaiproject.eaiprojectInventory.data.domain.Shampoo@6f517186, eaiproject.eaiprojectInventory.data.domain.Shampoo@1b8a478b], \highlight13 transactionId='665', \highlight0 trackingId='null', packingSlipId='null', status='PaymentReceived', first_name=Lukas, last_name=Gehrig, shipping_address_name='Lukas Gehrig', shipping_address_street='Musterstrasse 1', shipping_address_location='8000 Z\f2\'fcrich', parcel_service='DHL'\}\cf0\i0\f1\par
+\cf2\fs20\par
+\f2\lang2055 Damit der Service weiss was zusammen zu stellen ist, holt er sich die Bestellten Items via objectMapper aus der orderMessage.\par
+\highlight11\f1\fs16         List<Shampoo> \cf4 orderItems\cf2  = \cf10 objectMapper\cf2 .convertValue(\cf4 orderMessage\cf2 .getItems(), \cf5\b new\cf2\b0  TypeReference<List<Shampoo>>() \{\});\fs20\par
+\par
+\highlight0\f2 Nun geht es zur Methode "fetchGoods". Wie die schon besagt, werden dort die Items raus geholt und verpackt.\par
+\highlight3\f1\fs16\lang7         PackingSlip \cf4 packingSlip\cf2  = \cf10 inventoryService\cf2 .fetchGoods(Long.\i valueOf\i0 (\cf4 orderMessage\cf2 .getCustomerId()), \cf4 orderMessage\cf2 .getOrderId(), \cf4 orderItems\cf2 );\highlight0\f2\lang2055\par
+\fs20\par
+Nun werden die einzelnen Obejekte, hier Schampoos geholt und verpackt.\par
+\f1\fs16     \cf5\b public\cf2\b0  PackingSlip fetchGoods(Long \cf4 customerId\cf2 , String \cf4 orderId\cf2 , List<Shampoo> \cf4 shampoos\cf2 ) \cf5\b throws\cf2\b0  Exception \{\cf0\par
+\cf2\highlight3         \cf10 logger\cf2 .info(\cf8 "fetchGoods() with customerId "\cf2  + \cf4 customerId\cf2  + \cf8 " and orderId "\cf2  + \cf4 orderId\cf2  + \cf8 " called and going to pick "\cf2 + \cf4 shampoos\cf2 .size() +\cf8 " items in the inventory"\cf2 );\cf0\highlight0\par
+\cf2         \cf10 logger\cf2 .info(\cf8 "In the basket are this items: "\cf2 );\cf0\par
+\cf2         \cf5\b for\cf2\b0  (Shampoo \cf4 shampoo\cf2  : \cf4 shampoos\cf2 ) \{\cf0\par
+\cf2         \tab\cf10 logger\cf2 .info(\cf8 "Name: "\cf2  + \cf4 shampoo\cf2 .getName(), \cf8 "Brand: "\cf2  + \cf4 shampoo\cf2 .getBrand() + \cf8 " Type: "\cf2  + \cf4 shampoo\cf2 .getType());\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf5\b for\cf2\b0 (\cf5\b long\cf2\b0  \cf4 seconds\cf2  = \cf4 shampoos\cf2 .size(); \cf4 seconds\cf2  > 0; \cf4 seconds\cf2 --) \{\cf0\par
+\cf2             \cf10 logger\cf2 .info(\cf4 seconds\cf2  + \cf8 " items remaining"\cf2 );\cf0\par
+\cf2             Thread.\i sleep\i0 (1000);\cf0\par
+\cf2         \}\cf0\par
+\cf2\f2\fs20 Ebefalls wird dazu im logger ausgegeben, was das \'fcberhaupt alles ist.\f1\fs16\lang7\par
+\cf0\f0\fs10\par
+\cf2\i\f1\fs16 2018-12-15 08:09:40.864  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : In the basket are this items: \cf0\par
+\cf2 2018-12-15 08:09:43.245  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : Name: Deep Space\cf0\par
+\cf2 2018-12-15 08:09:44.740  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : Name: Africa\cf0\par
+\cf2 2018-12-15 08:09:46.479  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : Name: Adrenaline\cf0\par
+\cf2 2018-12-15 08:09:48.635  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : Name: Excite\par
+\cf0\i0\f0\fs20 Es wird nun dazu ein neuer PackingSlip er\'f6ffnet:\par
+\cf2\f1\fs16\lang2055         \cf6 // ...\cf0\par
+\cf2         PackingSlip \cf4 packingSlip\cf2  = \cf5\b new\cf2\b0  PackingSlip(\cf5\b new\cf2\b0  Integer(3433));\cf0\par
+\cf2         \cf10 logger\cf2 .info(\cf8 "Packing slip generated with packing slip id: "\cf2  + \cf4 packingSlip\cf2 .getPackingSlipId());\cf0\par
+\cf2         \cf5\b return\cf2\b0  \cf4 packingSlip\cf2 ;\cf0\par
+\cf2     \}\cf0\i\f0\fs20\lang7\par
+\cf2\f1\fs16 2018-12-15 08:10:57.124  INFO 8208 --- [euD0BOfKJnu2g-1] e.e.business.service.InventoryService    : Packing slip generated with packing slip id: 3433\par
+\par
+\i0\f2\fs20\lang2055 Erneut wird die OrderMessage mit der neuen Info (PackingSlipId) angereichert, der Status geupdatet auf "GoodFetched" und verpackt in eine EventMessage mit dem Header "ShipGoods", sodass sich der n\'e4chste Service darum k\'fcmmern kann.\fs16\par
+\f1         \cf4 orderMessage\cf2 .setPackingSlipId(\cf4 packingSlip\cf2 .getPackingSlipId().toString());\cf0\par
+\cf2         \cf4 orderMessage\cf2 .setStatus(\cf8 "GoodsFetched"\cf2 );\cf0\par
+\cf2         \cf10 messageEventSender\cf2 .send(\cf5\b new\cf2\b0  EventMessage<>(\cf8 "ShipGoods"\cf2 , \cf4 orderMessage\cf2 ));\par
+\fs20\par
+\cf1\b\f0\fs22\lang7 Vierter Breakpoint\cf0\b0 : [eaiShipping].[MessageEventListener]\par
+Durch den Header der EventMessage "ShipGoods" nimmt dieser Listener hier die Message auf und geht damit in die Verarbeitung in diesem Service.\par
+\cf2\f1\fs16     \cf12 @StreamListener\cf2 (target = Sink.\cf10\b\i INPUT\cf2\b0\i0 ,\cf0\par
+\cf2             condition=\cf8 "(headers['type']?:'')=='ShipGoods'"\cf2 )\par
+\f2\fs20\lang2055 Erneut wird die OrderMessage durch den Body der EventMessage zusammengestellt und der Logger schreibt, was er erhalten hat. Hier ist nun auch die packingSlipId vorhanden.\par
+\highlight3\f1\fs16         OrderMessage \cf4 orderMessage\cf2  = \cf4 eventMessage\cf2 .getPayload();\cf0\highlight0\par
+\cf2         \cf10\i logger\cf2\i0 .info(\cf8 "Payload received: "\cf2 + \cf4 orderMessage\cf2 .toString());\cf0\par
+\f2\fs20 Nun soll die Ware auch verschickt werden, dazu wird die Methode "shipGoods" ausgef\'fchrt.\par
+\cf2\f1\fs16         Shipping \cf4 shipping\cf2  = \cf10 shippingService\cf2 .shipGoods(\cf0\par
+\cf2         \tab\tab\cf5\b new\cf2\b0  Integer(34545),  \cf6 // trackId -> new in this Service\cf0\par
+\cf2         \tab\tab Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getOrderId()),  \cf6 // orderId -> given from eaieShop\cf0\par
+\cf2         \tab\tab Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getCustomerId()),  \cf6 // customerId -> given from eaieShop\cf0\par
+\cf2         \tab\tab Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getPackingSlipId()), \cf6 //packingSlipId -> given from eaiInvetory\cf0\par
+\cf2         \tab\tab\cf4 orderMessage\cf2 .getParcelService(), \cf6 // ParacelService -> given from eaieShop\cf0\par
+\cf2         \tab\tab\cf4 orderMessage\cf2 .getShippingAddressName(), \cf6 // ShippingAdress the Name from the customer -> given from eaieShop\cf0\par
+\cf2         \tab\tab\cf4 orderMessage\cf2 .getShippingAddressStreet(), \cf6 // ShippingAdress the Street from the customer -> given from eaieShop\cf0\par
+\cf2         \tab\tab\cf4 orderMessage\cf2 .getShippingAddressLocation()); \cf6 // ShippingAdress the PLZ and destination from the customer -> given from eaieShop\cf0\f2\par
+\fs20 Die Waren werden nun verschickt.\par
+\cf2\f1\fs16\lang7     \cf5\b public\cf2\b0  Shipping shipGoods(Integer \cf4 trackingId\cf2 , Integer \cf4 orderId\cf2 , Integer \cf4 customerId\cf2  , Integer \cf4 packingSlipId\cf2 , String \cf4 parcelService\cf2 , String \cf4 shipping_address_name\cf2 , String \cf4 shipping_address_street\cf2 , String \cf4 shipping_address_location\cf2 ) \cf5\b throws\cf2\b0  Exception \{\cf0\par
+\cf2\highlight3         \cf10 logger\cf2 .info(\cf8 "shipGoods() with orderId "\cf2  + \cf4 orderId\cf2  + \cf8 " and customer_id "\cf2  + \cf4 customerId\cf2  + \cf8 " and packingSlip_id "\cf2  + \cf4 packingSlipId\cf2  + \cf8 " called and hand over the parcel to the delivery service "\cf2  + \cf4 parcelService\cf2  + \cf8 "to adress "\cf2  + \cf4 shipping_address_name\cf2  + \cf8 " "\cf2  + \cf4 shipping_address_street\cf2  + \cf8 " "\cf2  + \cf4 shipping_address_location\cf2 );\cf0\highlight0\par
+\cf2         \cf5\b for\cf2\b0 (\cf5\b long\cf2\b0  \cf4 seconds\cf2  = 5; \cf4 seconds\cf2  > 0; \cf4 seconds\cf2 --) \{\cf0\par
+\cf2             \cf10 logger\cf2 .info(\cf8 "Delivery service ready in "\cf2  + \cf4 seconds\cf2  + \cf8 " seconds"\cf2 );\cf0\par
+\cf2             Thread.\i sleep\i0 (1000);\cf0\par
+\cf2         \}\cf0\par
+\cf2         \cf6 // ...\cf0\par
+\cf2         Shipping \cf4 shipping\cf2  = \cf5\b new\cf2\b0  Shipping(\cf4 trackingId\cf2 , \cf4 orderId\cf2 , \cf4 customerId\cf2 , \cf4 packingSlipId\cf2 , \cf4 parcelService\cf2 , \cf4 shipping_address_name\cf2 , \cf4 shipping_address_street\cf2 , \cf4 shipping_address_location\cf2 );\cf0\par
+\cf2         \cf10 logger\cf2 .info(\cf8 "Packet transferred to delivery service and tracking number "\cf2 + \cf4 shipping\cf2 .getOrderId() + \cf8 " received"\cf2 );\cf0\par
+\cf2         \cf5\b return\cf2\b0  \cf4 shipping\cf2 ;\cf0\par
+\cf2     \}\par
+\fs20\par
+\f2\lang2055 Dazu schreibt der Logger erneut was er aufgefunden hat.\par
+\i\f1\fs16 2018-12-15 08:19:58.679  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : shipGoods() with orderId 11 and customer_id 1 and packingSlip_id 3433 called and hand over the parcel to the delivery service DHLto adress Lukas Gehrig Musterstrasse 1 8000 Z\f2\'fcrich\cf0\f1\par
+\cf2 2018-12-15 08:20:00.228  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Delivery service ready in 5 seconds\cf0\par
+\cf2 2018-12-15 08:20:02.070  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Delivery service ready in 4 seconds\cf0\par
+\cf2 2018-12-15 08:20:04.062  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Delivery service ready in 3 seconds\cf0\par
+\cf2 2018-12-15 08:20:06.715  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Delivery service ready in 2 seconds\cf0\par
+\cf2 2018-12-15 08:20:09.603  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Delivery service ready in 1 seconds\cf0\par
+\cf2 2018-12-15 08:20:12.975  INFO 6776 --- [umMcrxm0s-D_g-1] e.e.business.service.ShippingService     : Packet transferred to delivery service and tracking number 11 received\f2\par
+\i0\fs20 Die erhaltene TrackingId wird der OrderMessage hinzugef\'fcgt und der Status wird ge\'e4ndert auf "GoodsShipped". Alles wird verpackt in eine EventMessage mit dem Header "UpdateLoyalityPoints".\par
+\f1\fs16         \cf4 orderMessage\cf2 .setStatus(\cf8 "GoodsShipped"\cf2 );\cf0\par
+\cf2         \cf10\i logger\cf2\i0 .info(\cf4 orderMessage\cf2 .toString());\cf0\par
+\cf2         \cf10 messageEventSender\cf2 .send(\cf5\b new\cf2\b0  EventMessage<>(\cf8 "UpdateLoyalityPoints"\cf2 , \cf4 orderMessage\cf2 ));\par
+\fs20\par
+\cf1\b\f0\fs22\lang7 F\'fcnfter Breakpoint\cf0\b0 : [eaieShop].[MessageEventListener]\cf2\f1\fs20\par
+\cf0\f0\fs22 Durch den Header der EventMessage "UpdateLoyalityPoints" nimmt dieser Listener hier die Message auf und geht damit in die Verarbeitung in diesem Service.\fs18\par
+\cf2\f1\fs16     \cf12 @StreamListener\cf2 (target = Sink.\cf10\b\i INPUT\cf2\b0\i0 ,\cf0\par
+\cf2             condition=\cf8 "(headers['type']?:'')=='UpdateLoyalityPoints'"\cf2 )\par
+\f2\fs20\lang2055 Erneut wird die OrderMessage durch den Body der EventMessage zusammengestellt und der Logger schreibt, was er erhalten hat. Hier sind nun alle Informationen vorhanden. Aber die LoyalityPoints m\'fcssen im Shop geupdatet werden, da der Kunde hier gepflegt wird.\fs16\par
+\highlight3\f1         OrderMessage \cf4 orderMessage\cf2  = \cf4 eventMessage\cf2 .getPayload();\cf0\highlight0\par
+\cf2         \cf10\i logger\cf2\i0 .info(\cf8 "Payload received: "\cf2 + \cf4 orderMessage\cf2 .toString());\par
+\f2\fs20 Das Update der Punkte geschieht in zwei Methoden. Zuerst werden die Punkte berechnet, dann werden sie auch noch geupdatet.\par
+\f1\fs16         Customer \cf4 calcCustomer\cf2  = \cf10 eShopService\cf2 .\highlight7 caluclateLoyalityPoints\highlight0 (Integer.\i parseInt\i0 (\cf4 orderMessage\cf2 .getCustomerId()), \cf4 orderMessage\cf2 .getAmount());       \cf0\par
+\cf2         Customer \cf4 customer\cf2  = \cf10 eShopService\cf2 .addLoyalityPoints(\cf4 calcCustomer\cf2 );\par
+\f2\fs20 Die Berechnung selbst besteht daraus, dass aufgrund des Kaufbetrages nun ein hunderstel davon als LoylalityPoints angerechnet werden. \fs16\par
+\f1     \cf5\b public\cf2\b0  Customer caluclateLoyalityPoints(Integer \cf4 customerId\cf2 , Double \cf4 amount\cf2 ) \cf5\b throws\cf2\b0  Exception \{\cf0\par
+\cf2\highlight3     \tab\cf10 logger\cf2 .info(\cf8 "caluculateLoyalityPoints() for a customer with Id:  "\cf2  + \cf4 customerId\cf2  + \cf8 " and last amount "\cf2  + \cf4 amount\cf2 );\cf0\highlight0\par
+\cf2     \tab\cf6 //find the customer\cf0\par
+\cf2         Customer \cf4 customer\cf2  = retrieveCustomerById(\cf4 customerId\cf2 );\cf0\par
+\cf2         \cf6 // Calculate\cf0\par
+\cf2         Double \cf4 calcAmout\cf2  = \cf4 amount\f2  \cf2\f1 /\f2  100\f1 ;\cf0\par
+\cf2         Integer \cf4 newLoyalityPoints\cf2  = (\cf5\b int\cf2\b0 ) Math.\i round\i0 (\cf4 calcAmout\cf2 );\cf0\par
+\cf2         \cf0\par
+\cf2         \cf10 logger\cf2 .info(\cf8 "LoyalityPoints from the last amount are calculated: "\cf2  + \cf4 newLoyalityPoints\cf2 );\cf0\par
+\cf2         \cf6 // make a new Customer temporary for the calculated Points\cf0\par
+\cf2         Customer \cf4 calcCustomer\cf2  = \cf5\b new\cf2\b0  Customer(\cf0\par
+\cf2         \tab\tab\cf4 customer\cf2 .getCustomerId(),\cf0\par
+\cf2         \tab\tab\cf4 newLoyalityPoints\cf0\par
+\cf2         \tab\tab );\cf0\par
+\cf2         \cf0\par
+\cf2         \cf5\b return\cf2\b0  \cf4 calcCustomer\cf2 ;\cf0\par
+\cf2     \}\f2\par
+\fs20 Da dies nur die Berechnung ist wird der berechnete Betrag weitergegeben an die Methode welche dann die Punkte auch effektiv hinzuf\'fcgt.\par
+\f1\fs16\lang7     \cf5\b public\cf2\b0  Customer addLoyalityPoints(Customer \cf4 calcCustomer\cf2 ) \cf5\b throws\cf2\b0  Exception \{\cf0\par
+\cf2         \cf0\par
+\cf2     \tab\cf6 //find the customer\cf0\par
+\cf2\highlight3         Customer \cf4 customer\cf2  = retrieveCustomerById(\cf4 calcCustomer\cf2 .getCustomerId());\cf0\highlight0\par
+\cf2     \tab\cf0\par
+\cf2     \tab\cf6 // Add\cf0\par
+\cf2         \cf4 customer\cf2 .setNmbr_of_loyalty_points(\cf4 customer\cf2 .getNmbr_of_loyalty_points() + \cf4 calcCustomer\cf2 .getNmbr_of_loyalty_points());\cf0\par
+\cf2         \cf10 logger\cf2 .info(\cf8 "New LoyalityPoints are: "\cf2  + \cf4 customer\cf2 .getNmbr_of_loyalty_points());\cf0\par
+\cf2         \cf0\par
+\cf2         \cf5\b return\cf2\b0  \cf4\fs20 customer\cf2 ;\cf0\par
+\cf2\fs16     \}\fs20\par
+\cf0\f0\fs2\par
+\fs20 Dies gibt keine R\'fcckmeldung mehr an den Kunden, sondern passiert im Hintergrund. Daher \'e4ndert nun lediglich noch der Status der orderMessage.\fs16\par
+\cf2\f1         \cf4 orderMessage\cf2 .setLoyalityPoints(\cf4 customer\cf2 .getNmbr_of_loyalty_points().toString());\cf0\par
+\cf2         \cf4 orderMessage\cf2 .setStatus(\cf8 "LoyalityPoints updated"\cf2 );\cf0\par
+\cf2         \cf10\i logger\cf2\i0 .info(\cf8 "Loyality Points are updated: "\cf2 + \cf4 orderMessage\cf2 .getLoyalityPoints().toString());\par
+\f2\fs20\lang2055 Der Logger f\'fchrt wie gewohnt das gemachte aus.\par
+\i\f1\fs16 2018-12-15 08:29:00.890  INFO 14040 --- [dGKwRLB5HkoLQ-1] e.i.eShop.business.service.eShopService  : LoyalityPoints from the last amount are calculated: 3\cf0\par
+\cf2 2018-12-15 08:30:00.984  INFO 14040 --- [dGKwRLB5HkoLQ-1] e.i.eShop.business.service.eShopService  : New LoyalityPoints are: 11003\cf0\par
+\cf2 2018-12-15 08:30:44.840  INFO 14040 --- [dGKwRLB5HkoLQ-1] e.i.e.s.listener.MessageEventListener    : Loyality Points are updated: 11003\cf0\f0\fs2\lang7\par
+}
+ 
